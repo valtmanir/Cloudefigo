@@ -3,7 +3,6 @@
 __author__ = 'nirv'
 
 from Common.AppConfigMgr import ConfigMgr;
-from AWS.BotoCfg import BotoCfg
 from AWS.EC2 import EC2
 
 config_file_name = "Init.config"
