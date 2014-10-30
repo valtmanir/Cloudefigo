@@ -4,6 +4,8 @@ import os
 
 __author__ = 'nirv'
 
+from Common.Exceptions import GenericException
+
 # This class handles the configuration management for this program.
 # The configurations taken from a standard XML file
 class ConfigMgr:
@@ -16,8 +18,8 @@ class ConfigMgr:
             self.cfgTree = ET.parse(ConfigMgr.config_file_name)
         except:
             path = os.getcwd()
-            Logger.log("error", "Cannot find the configuration file {} in path {}".format(self.config_file_name, path))
-            raise
+            raise GenericException("Cannot find the configuration file {} in path {}".format(self.config_file_name, path))
+
         return
 
     def getParameter(self, scope, param):
@@ -26,7 +28,5 @@ class ConfigMgr:
                 scopeNode = self.cfgTree.find(scope)
                 return scopeNode.find(param).text
             except:
-                Logger.log("error",
-                                "Cannot find the configuration for the scope {} and parameter {}".format(scope, param))
-                raise
+                raise GenericException("Cannot find the configuration for the scope {} and parameter {}".format(scope, param))
         return ""

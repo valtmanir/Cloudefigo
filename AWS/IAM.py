@@ -13,28 +13,19 @@ from boto.iam import IAMConnection
 
 
 class IAM:
-    def __init__(self):
+    def __init__(self, is_initiated_by_cloud_init = True):
         self.__cfg = ConfigMgr()
         self.__iam_basic_policy_path = self.__cfg.getParameter("AWS", "IAMBasicPolicyPath")
         self.__iam__strict_policy_path = self.__cfg.getParameter("AWS", "IAMStrictPolicyPath")
         self.__prefix_name = self.__cfg.getParameter("AWS", "NamingPrefix")
-        credentials = EnvronmentVarialbes.get_instance_credentials().split(" ")
-        self.__conn = IAMConnection(aws_access_key_id=credentials[0], aws_secret_access_key=credentials[1], security_token=credentials[2])
-        self.__iam_policy_name = "cloud-sec-policy"
-
-    # <editor-fold desc="Executed only by the management script">
-
-    def __init__(self, is_aws_cli_initiated):
-        self.__cfg = ConfigMgr()
-        self.__iam_basic_policy_path = self.__cfg.getParameter("AWS", "IAMBasicPolicyPath")
-        self.__iam__strict_policy_path = self.__cfg.getParameter("AWS", "IAMStrictPolicyPath")
-        self.__prefix_name = self.__cfg.getParameter("AWS", "NamingPrefix")
-        if not is_aws_cli_initiated:
+        if is_initiated_by_cloud_init:
             credentials = EnvronmentVarialbes.get_instance_credentials().split(" ")
             self.__conn = IAMConnection(aws_access_key_id=credentials[0], aws_secret_access_key=credentials[1], security_token=credentials[2])
         else:
             self.__conn = boto.connect_iam()
         self.__iam_policy_name = "cloud-sec-policy"
+
+    # <editor-fold desc="Executed only by the management script">
 
     def create_dynamic_role(self):
         random_id = uuid.uuid4().get_hex()

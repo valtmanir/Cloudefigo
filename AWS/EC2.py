@@ -5,37 +5,36 @@ __author__ = 'nirv'
 import boto.ec2
 import time
 from Common.AppConfigMgr import ConfigMgr
+from Common.Exceptions import GenericException
 from AWS.EnvironmentVarialbes import EnvronmentVarialbes
 from Common.Logger import Logger
 from AWS.IAM import IAM
 
 
 class EC2:
-    def __init__(self, region):
+
+    def __init__(self, is_executed_by_cloud_init = True, region = None):
         self.__cfg = ConfigMgr()
-        credentials = EnvronmentVarialbes.get_instance_credentials().split(" ")
-        self.__conn = boto.ec2.EC2Connection(aws_access_key_id=credentials[0], aws_secret_access_key=credentials[1], security_token=credentials[2])
-        self.__conn.region = region
-        self.__current_instance_name = EnvronmentVarialbes.get_current_instance_name()
+        if is_executed_by_cloud_init:
+            credentials = EnvronmentVarialbes.get_instance_credentials().split(" ")
+            self.__conn = boto.ec2.EC2Connection(aws_access_key_id=credentials[0], aws_secret_access_key=credentials[1], security_token=credentials[2])
+            self.__conn.region = EnvronmentVarialbes.get_current_instance_region()
+            self.__current_instance_name = EnvronmentVarialbes.get_current_instance_name()
+        else:
+            self.__conn = boto.ec2.connect_to_region(region)
 
 
     # <editor-fold desc="Execution during cloud init">
-
-    def move_current_instance_to_remediation_group(self):
-        remediation_group_id = self.__cfg.getParameter("AWS", "RemediationSecurityGroupId")
-        self.__conn.modify_instance_attribute(self.__current_instance_name,
-                                              "groupSet", remediation_group_id)
-        Logger.log("info", "This instance moved to the remediation subnet {}".format(remediation_group_id))
 
     def move_current_instance_to_production_group(self):
         production_group_id = self.__cfg.getParameter("AWS", "ProductionSecurityGroupId")
         instance = self.__get_instance_object_by_instance_id(self.__current_instance_name)
         self.__conn.modify_instance_attribute(self.__current_instance_name,
-                                              "groupSet", production_group_id)
+                                              "groupSet", [production_group_id])
         Logger.log("info", "This instance moved to the production subnet {}".format(production_group_id))
 
     def post_validation_action(self):
-        iam = IAM()
+        iam = IAM(True)
         current_role_name = EnvronmentVarialbes.get_current_instance_profile()
         iam.strict_dynamic_role(current_role_name)
         Logger.log("info", "Changed the IAM role to be more strict")
@@ -44,24 +43,14 @@ class EC2:
 
     # <editor-fold desc="Executed only by the management script">
 
-    def __init__(self, region, is_aws_cli_initiated):
-        self.__cfg = ConfigMgr()
-        if not is_aws_cli_initiated:
-            credentials = EnvronmentVarialbes.get_instance_credentials().split(" ")
-            self.__conn = boto.ec2.EC2Connection(aws_access_key_id=credentials[0], aws_secret_access_key=credentials[1], security_token=credentials[2])
-            self.__current_instance_name = EnvronmentVarialbes.get_current_instance_name()
-        else:
-            self.__conn = boto.ec2.connect_to_region(region)
-        self.__conn.region = region
-
     def create_secure_instance(self, ami_id, instance_type, instance_name):
         script_path = self.__cfg.getParameter("AWS", "CloudInitScriptPath")
-        production_security_group_id = self.__cfg.getParameter("AWS", "ProductionSecurityGroupId")
+        production_security_group_id = self.__cfg.getParameter("AWS", "RemediationSecurityGroupId")
         production_subnet_id = self.__cfg.getParameter("AWS", "ProductionSubnetId")
         key_name = self.__cfg.getParameter("AWS", "EC2KeyName")
         with open(script_path, "r") as script_file:
             cloud_init_script = script_file.read()
-            iam_role = IAM(True)
+            iam_role = IAM(False)
             instance_profile = iam_role.create_dynamic_role()
             new_reservation = self.__try_create_instance(ami_id, key_name, instance_profile, instance_type,
                                                          production_subnet_id, production_security_group_id,
@@ -107,5 +96,4 @@ class EC2:
                 return new_reservation
             except Exception as ex:
                 message = "Cannot create new instance: {}".format(ex.message)
-                Logger.log("error", message)
-                raise Exception(message)
+                raise GenericException(message)

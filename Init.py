@@ -1,28 +1,34 @@
-#!/usr/bin/python
+#!/usr/bin/pythonw
 
 __author__ = 'nirv'
 
 
-from AWS.S3 import S3
-from AWS.EC2 import EC2
+from NessusScanner.VulnerabilityAssessment import Scanner
+from Common.Exceptions import RemediationException,GenericException
+from AWS import S3, EC2
 from Common.Logger import Logger
 
-s3 = S3()
-encryption_key = "Hello Encryption Key"
-s3.set_encryption_key(encryption_key)
-Logger.log("info", "The encryption key posted and received from S3")
+ec2 = EC2.EC2()
+bucket = S3.S3()
 
+try:
 
-ec2 = EC2("us-east-1")
+    encryption_key = "Hello Encryption Key"
+    bucket.set_encryption_key(encryption_key)
 
-# This should run only if the instance does NOT comply with the security policy
-ec2.move_current_instance_to_remediation_group()
-Logger.log("info", "Instance Moved to remediation security group")
-ec2.move_current_instance_to_production_group()
-Logger.log("info", "Instance Moved to production security group")
+    nessus = Scanner()
+    nessus.run_scan()
 
+    ec2.move_current_instance_to_production_group()
+    ec2.post_validation_action()
 
+except RemediationException as re:
+    ec2.post_validation_action()
+    exit()
 
-# This should run only of the instance comply with the security policy
-ec2.post_validation_action()
+except GenericException as ge:
+    exit()
 
+except Exception as ex:
+    Logger.log("error", ex.message)
+    exit()

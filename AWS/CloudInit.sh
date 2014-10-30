@@ -21,6 +21,8 @@ pip install boto
 wget https://pypi.python.org/packages/2.7/P/PyChef/PyChef-0.2.3-py27-none-any.whl
 wheel install PyChef-0.2.3-py27-none-any.whl
 
+# Qualysb Python API
+pip install qualysapi
 
 # ------------------
 # Run the Cloud Init

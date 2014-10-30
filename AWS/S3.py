@@ -18,13 +18,12 @@ class S3:
         self.__current_instance_name = EnvronmentVarialbes.get_current_instance_name()
         credentials = EnvronmentVarialbes.get_instance_credentials().split(" ")
         self.__s3 = S3Connection(aws_access_key_id=credentials[0], aws_secret_access_key=credentials[1], security_token=credentials[2])
-           # boto.connect_s3(aws_access_key_id=credentials[0],aws_secret_access_key=credentials[1])
+
 
     def set_encryption_key(self, encryption_key):
         bucket = self.__s3.create_bucket(self.__bucket_unique_id)
         bucket.set_policy(self.__get_bucket_policy)
         from boto.s3.key import Key
-
         key_object = Key(bucket)
         key_object.key = "key"
         key_object.set_contents_from_string(encryption_key, {"Referer": self.__get_referer_unique_id()}, True)
