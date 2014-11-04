@@ -20,12 +20,13 @@ class S3:
         self.__s3 = S3Connection(aws_access_key_id=credentials[0], aws_secret_access_key=credentials[1], security_token=credentials[2])
 
 
-    def set_encryption_key(self, encryption_key):
+    def set_encryption_key(self):
         bucket = self.__s3.create_bucket(self.__bucket_unique_id)
         bucket.set_policy(self.__get_bucket_policy)
         from boto.s3.key import Key
         key_object = Key(bucket)
         key_object.key = "key"
+        encryption_key = self.__generate_encryption_key()
         key_object.set_contents_from_string(encryption_key, {"Referer": self.__get_referer_unique_id()}, True)
         expires_in_seconds = 1800
         key_object.generate_url(expires_in_seconds)
@@ -42,6 +43,11 @@ class S3:
         unique_string = "{}{}".format(EnvronmentVarialbes.get_current_instance_mac(), self.__current_instance_name)
         uppercase_result = hashlib.sha512(unique_string).hexdigest()
         return uppercase_result.lower()
+
+    def __generate_encryption_key(self):
+        from strgen import StringGenerator as SG
+        return SG("[\l\d]{100}&[\p]").render()
+
 
     @property
     def __get_bucket_policy(self):

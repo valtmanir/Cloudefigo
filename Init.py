@@ -1,20 +1,18 @@
-#!/usr/bin/pythonw
+#!/usr/bin/python
 
 __author__ = 'nirv'
 
-
+from Chef.ConfigurationManagement import ChefClient
 from NessusScanner.VulnerabilityAssessment import Scanner
 from Common.Exceptions import RemediationException,GenericException
-from AWS import S3, EC2
+from AWS.EC2 import EC2
 from Common.Logger import Logger
 
-ec2 = EC2.EC2()
-bucket = S3.S3()
+ec2 = EC2()
 
 try:
-
-    encryption_key = "Hello Encryption Key"
-    bucket.set_encryption_key(encryption_key)
+    chef_client = ChefClient()
+    chef_client.verify_management()
 
     nessus = Scanner()
     nessus.run_scan()

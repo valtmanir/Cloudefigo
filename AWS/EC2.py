@@ -26,6 +26,17 @@ class EC2:
 
     # <editor-fold desc="Execution during cloud init">
 
+    def create_volume(self):
+        inst = self.__get_instance_object_by_instance_id(self.__current_instance_name)
+        vol = self.__conn.create_volume(1,self.__conn.region)
+        time.sleep(30)
+        curr_vol = self.__conn.get_all_volumes([vol.id])[0]
+        while curr_vol.status != 'available':
+            time.sleep(10)
+            Logger.logger("info", "pending to make volume available")
+        self.__conn.attach_volume (vol.id, inst.id, "/dev/sdf")
+        Logger.log("info", "The volume {} attached to this instance".format(vol.id))
+
     def move_current_instance_to_production_group(self):
         production_group_id = self.__cfg.getParameter("AWS", "ProductionSecurityGroupId")
         instance = self.__get_instance_object_by_instance_id(self.__current_instance_name)

@@ -27,12 +27,14 @@ class Logger:
     def log(cls, log_type, message):
         if cls.logger_initiated is False:
             cls.init();
-        print "{}: {}".format(log_type, message)
         if log_type.upper() == "CRITICAL":
             cls.logger.critical(message)
+            print "{}: {}".format(log_type, message)
         elif log_type.upper() == "ERROR":
             cls.logger.error(message)
+            print "{}: {}".format(log_type, message)
         elif log_type.upper() == "WARNING":
             cls.logger.warning(message)
+            print "{}: {}".format(log_type, message)
         else:
             cls.logger.info(message)
