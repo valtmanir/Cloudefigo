@@ -70,6 +70,15 @@ class EC2:
             self.__conn.create_tags([instance.id], {"Name": instance_name})
             Logger.log("info", "An instance created with id {}".format(instance.id))
 
+    def get_all_running_instance_names(self):
+        instances_list = []
+        instances = self.__conn.get_all_instances()
+        for instance in instances:
+            if instance.instances[0].state == "running":
+                instance_hostname =  instance.instances[0].private_dns_name.split('.')[0]
+                instances_list.append(instance_hostname)
+        return instances_list
+
     # </editor-fold>
 
     # TODO remove after testing of new method in EnvironmentVarialbes
