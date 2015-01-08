@@ -4,11 +4,11 @@ __author__ = 'nirv'
 
 from Chef.ConfigurationManagement import ChefClient
 from NessusScanner.VulnerabilityAssessment import Scanner
-from Common.Exceptions import RemediationException,GenericException
-from AWS.EC2 import EC2
-from Common.Logger import Logger
+from CloudServices.Common.Exceptions import RemediationException,GenericException
+from CloudServices.IaaS.Instances import EC2Instance
+from CloudServices.Common.Logger import Logger
 
-ec2 = EC2()
+ec2 = EC2Instance()
 
 try:
     chef_client = ChefClient()
@@ -18,10 +18,10 @@ try:
     nessus.run_scan()
 
     ec2.move_current_instance_to_production_group()
-    ec2.post_validation_action()
+    ec2.strict_current_instance_role_permissions()
 
 except RemediationException as re:
-    ec2.post_validation_action()
+    ## ec2.strict_current_instance_role_permissions() ## Depends on the business, it can be added.
     exit()
 
 except GenericException as ge:

@@ -3,18 +3,18 @@
 __author__ = 'nirv'
 
 from chef import Node, ChefAPI
-from Common.AppConfigMgr import ConfigMgr
-from Common.Logger import Logger
-from Common.Exceptions import RemediationException
+from CloudServices.Common.AppConfigMgr import ConfigMgr
+from CloudServices.Common.Logger import Logger
+from CloudServices.Common.Exceptions import RemediationException
 
 
 class ChefClient:
 
     def __init__(self):
         cfg = ConfigMgr()
-        url = cfg.getParameter("Chef","ServerURL")
-        key_path = cfg.getParameter("Chef","KeyFilePath")
-        client_name = cfg.getParameter("Chef","ValidationClientName")
+        url = cfg.get_parameter("Chef","ServerURL")
+        key_path = cfg.get_parameter("Chef","KeyFilePath")
+        client_name = cfg.get_parameter("Chef","ValidationClientName")
         self.__chef_client = ChefAPI(url,key_path,client_name)
 
     def verify_management(self):

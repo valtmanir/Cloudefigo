@@ -2,16 +2,16 @@
 
 __author__ = 'nirv'
 
-from AWS.S3 import S3
-from AWS.EC2 import EC2
-from Common.Logger import Logger
+from CloudServices.IaaS.Storage import S3Storage
+from CloudServices.IaaS.Instances import EC2Instance
+from CloudServices.Common.Logger import Logger
 import sys
 
 try:
-    ec2 = EC2()
+    ec2 = EC2Instance()
     ec2.create_volume()
 
-    bucket = S3()
+    bucket = S3Storage()
     if len(sys.argv) > 1:
         bucket.set_encryption_key()
 
