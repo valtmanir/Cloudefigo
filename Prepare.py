@@ -9,11 +9,11 @@ import sys
 
 try:
     ec2 = EC2Instance()
-    ec2.create_volume()
+    ec2.attach_new_storage_to_current_instance()
 
     bucket = S3Storage()
     if len(sys.argv) > 1:
-        bucket.set_encryption_key()
+        bucket.generate_and_store_encryption_key()
 
     with open("key","a+") as key_file:
         key_file.write(bucket.get_encryption_key())
