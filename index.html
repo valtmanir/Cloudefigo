@@ -1,45 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Cloudefigo : ">
+    <title>Cloudefigo by valtmanir</title>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Cloudefigo</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
+    <div class="wrapper">
+      <header>
+        <h1>Cloudefigo</h1>
+        <p></p>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/valtmanir/Cloudefigo">View on GitHub</a>
+        <p class="view"><a href="https://github.com/valtmanir/Cloudefigo">View the Project on GitHub <small>valtmanir/Cloudefigo</small></a></p>
 
-          <h1 id="project_title">Cloudefigo</h1>
-          <h2 id="project_tagline"></h2>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/valtmanir/Cloudefigo/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/valtmanir/Cloudefigo/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+        <ul>
+          <li><a href="https://github.com/valtmanir/Cloudefigo/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/valtmanir/Cloudefigo/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/valtmanir/Cloudefigo">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
         <h1>
-<a id="cloudefigo" class="anchor" href="#cloudefigo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cloudefigo</h1>
+<a id="" class="anchor" href="#" aria-hidden="true"><span class="octicon octicon-link"></span></a><img src="https://raw.githubusercontent.com/valtmanir/Cloudefigo/gh-pages/images/logo.png" alt="Logo">
+</h1>
 
-<p>Cloudefigo is an open source tool providing an automated approach to secure IaaS instances. This version focused on Amazon Web Services EC2 instances, but the idea can be implemented in other services and cloud providers.</p>
+<h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>Cloudefigo is an open source tool providing an automated approach to secure IaaS instances. Currently Cloudefigo is focused focused on Amazon Web Services EC2 instances, however the idea can be implemented in other services and cloud providers.</p>
+
+<h3>
+<a id="who-should-use-it" class="anchor" href="#who-should-use-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>Who should use it?</h3>
+
+<p>Any company managing its main or shadow IT in the cloud may use Cloudefigo to automatically secure the infrastructure. The existing solution leverages few tools that can be free or commercial - all can be changed by simply replacing the code behind the scenes in order to integrate with company's standard tools. <br>
+Although Cloudefigo written in Python, the cloud infrastructure administrators can use it without having experience with coding. However, a knowledge of system infrastructure is required in order to understand the processes the Cloudefigo performs (to be explained in this wiki).</p>
+
+<h3>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h3>
+
+<p>This tool is published under General Public License (<a href="https://github.com/valtmanir/Cloudefigo/blob/master/LICENSE">GPL</a>).</p>
 
 <h2>
 <a id="workflows" class="anchor" href="#workflows" aria-hidden="true"><span class="octicon octicon-link"></span></a>Workflows</h2>
-
-<hr>
 
 <h3>
 <a id="launch-secure-instance" class="anchor" href="#launch-secure-instance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Launch Secure Instance</h3>
@@ -47,12 +57,12 @@
 <ol>
 <li>A management user executes a secure instance launch request.</li>
 <li>A new dynamic <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html">IAM role</a> (new approach by Cloudefigo) is created with minimal permissions to perform the steps in this flow.</li>
-<li>The new instance created in the remediation security group, with the new dynamic IAM role. This means that the instance have permissions to perform avtivities, exactly as group of users would have permissions if assigned.</li>
+<li>The new instance created in the remediation security group, with the new dynamic IAM role. This means that the instance has permissions to perform activities, exactly as a group of users would have permissions if assigned.</li>
 <li>When the instance starts first time, it performs a software upgrade and installs pre-requisites.</li>
 <li>Following successful installation, the instance attaches a new volume and performs full disk encryption in a secure manner. The encryption keys can be stored on HSM, but S3 can also be used for that, by creating a dynamic policy (new approach by Cloudefigo) for the specific instance. This process executed by enforcing pre-configured <a href="https://www.getchef.com/chef/">Chef</a> policy on the instance.</li>
 <li>When all configuration steps completed, a vulnerability scan executed by <a href="http://www.tenable.com/products/nessus/select-your-operating-system">Nessus</a>.</li>
 <li>If the scan results do not contain medium risks and above, then the instance moved to the production security group.</li>
-<li>Since all operations done, the dynamic IAM role is minimized to allow access only to the full disk encryption keys on S3.</li>
+<li>Since all operations done, the dynamic IAM role is minimized to allow access only to the full disk encryption key on S3.</li>
 </ol>
 
 <h3>
@@ -60,19 +70,10 @@
 
 <p>In certain cases, the security manager wants to know which instances are not managed, thus he needs to run the Cloudefigo management script to compare the existing EC2 instances with the list of managed instances in the Chef server.</p>
 
-<p>In addition, by enabling Amazon Web Services Cloud Trail, all audits can be written to a specific bucket. This allows to perform validation of any identity misuse in the cloud. Cloudefigo contains the ability to parse the logs and present them in more user friendly view. Note that this feature is not production ready yet. </p>
+<p>In addition, by enabling Amazon Web Services Cloud Trail, all audits can be written to a specific bucket. This allows to perform validation of any identity misuse in the cloud. Cloudefigo contains the ability to parse the logs and store them in a relational database. By storing the data in such formant, System Incident and Event Management (SIEM) products can pull the data and correlate it in order to identify abnormal activities.</p>
 
 <h2>
 <a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting Started</h2>
-
-<hr>
-
-<h3>
-<a id="pre-requisites" class="anchor" href="#pre-requisites" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pre-requisites</h3>
-
-<ol>
-<li>Account in Amazon Web Services with administrative privileges.</li>
-</ol>
 
 <h3>
 <a id="cloning-the-code" class="anchor" href="#cloning-the-code" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cloning the Code</h3>
@@ -84,157 +85,16 @@ $ cd Cloudefigo
 </code></pre>
 
 <h3>
-<a id="setting-the-iaas-environment" class="anchor" href="#setting-the-iaas-environment" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setting the IaaS Environment</h3>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h3>
 
-<ol>
-<li>Create a new instance of the latest Ubuntu and assign an <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html">Elastic IP</a> to it. Then, install Nessus on this instance.</li>
-<li>Get <a href="https://www.getchef.com/solutions/aws/">Chef for AWS</a> and assign an Elastic IP to it as well.</li>
-<li>Create a new user and group for Cloudefigo management operations. Then, add the following policy to the group:</li>
-</ol>
-
-<pre><code>{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "Stmt1413548658000",
-      "Effect": "Allow",
-      "Action": [
-        "ec2:ModifyInstanceAttribute",
-        "ec2:RunInstances",
-        "ec2:CreateTags"
-      ],
-      "Resource": [
-        "*"
-      ]
-    },
-    {
-      "Sid": "Stmt1413627168000",
-      "Effect": "Allow",
-      "Action": [
-        "iam:CreateRole",
-        "iam:GetRole",
-        "iam:ListRoles",
-        "iam:PutRolePolicy",
-        "iam:CreateInstanceProfile",
-        "iam:GetInstanceProfile",
-        "iam:AddRoleToInstanceProfile",
-        "iam:PassRole"
-      ],
-      "Resource": [
-        "*"
-      ]
-    },
-{
-      "Sid": "Stmt1417412719000",
-      "Effect": "Allow",
-      "Action": [
-        "cloudtrail:DescribeTrails"
-      ],
-      "Resource": [
-        "*"
-      ]
-    },
-    {
-      "Sid": "Stmt1417412836000",
-      "Effect": "Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:ListBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::cloud-log-trial",
-        "arn:aws:s3:::cloud-log-trial/*"
-      ]
-    }
-  ]
-}
-</code></pre>
-
-<p>Note that resource names may be different between environments.
-4. <a href="http://docs.aws.amazon.com/general/latest/gr/getting-aws-sec-creds.html">Generate API keys</a> for this user and store them for the coming steps.</p>
-
-<h3>
-<a id="setting-the-management-computer-environment" class="anchor" href="#setting-the-management-computer-environment" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setting the Management Computer Environment</h3>
-
-<ol>
-<li>Download </li>
-<li>Install <a href="https://www.python.org/download/releases/2.7/">Python 2.7</a>.</li>
-<li>
-<a href="http://aws.amazon.com/cli/">Amazon Web Services CLI</a> needed to manage the credentials of the management user only. Install the AWS CLI and set the credentials using the following command:</li>
-</ol>
-
-<pre><code>$ aws configure
-AWS Access Key ID [None]: (your access key id)
-AWS Secret Access Key [None]: (your secret access key)
-Default region name [None]: 
-Default output format [None]:
-</code></pre>
-
-<ol>
-<li>In order to install Pychef, the following dependencies should be installed. The first is <a href="https://pypi.python.org/pypi/pip">Python-pip</a>. </li>
-<li>When pip installed, it is easy to install Wheel by running the following command line:</li>
-</ol>
-
-<pre><code>pip install wheel
-</code></pre>
-
-<ol>
-<li>Then install PyChef using Wheel by running (this example runs on linux):</li>
-</ol>
-
-<pre><code>wget https://pypi.python.org/packages/2.7/P/PyChef/PyChef-0.2.3-py27-none-any.whl
-wheel install PyChef-0.2.3-py27-none-any.whl
-</code></pre>
-
-<h3>
-<a id="setting-the-cloudefigo-parameters" class="anchor" href="#setting-the-cloudefigo-parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setting the Cloudefigo Parameters</h3>
-
-<h4>
-<a id="common-configuration-file" class="anchor" href="#common-configuration-file" aria-hidden="true"><span class="octicon octicon-link"></span></a>Common Configuration File</h4>
-
-<p>Cloudefigo contains several parameters required in order to operate correctly. All of the parameters located in the file <code>init.config</code>. The folowing parameters required by the cloud-init script executed on the launched instance:
-1.  <code>AWS.BucketPolicyPath</code> - The path to the dynamic policy should be set for the s3 bucket.
-2.  <code>AWS.IAMBasicPolicyPath</code> - The path to the dynamic IAM policy of the new instance during the initiation phase, i.e. before moving to production.
-3.  <code>AWS.IAMStrictPolicyPath</code> - The path to the dynamic IAM policy of the instance after moving to production.
-4.  <code>AWS.NamingPrefix</code> - Naming prefix used by Cloudefigo. It is mainly used for bucket names and dynamic policies generation.
-5.  <code>AWS.ProductionSecurityGroupId</code> - The security group id representing the production environment.
-6.  <code>AWS.ProductionSubnetId</code> - The subnet id where the instance started and promoted to production. 
-7.  <code>AWS.RemediationSecurityGroupId</code> - The security group id where the instance starts and performs all operations before moving to production.
-8.  <code>AWS.CloudInitScriptPath</code> - The path of the cloud-init script.
-9.  <code>AWS.EC2KeyName</code> - When starting an instance, the key name must be provided in order to allow future maintenance of the instance. 
-10.  <code>AWS.CanonicalUserId</code> - This setting must be defined in order to allow communications from the instances to the s3 buckets. The <a href="http://docs.aws.amazon.com/general/latest/gr/acct-identifiers.html">Canonical User Id</a> can be found in by expanding the "Account Identifiers" list in the <a href="https://console.aws.amazon.com/iam/home?#security_credential">Security Credentials</a> page.
-11.  <code>Chef.KeyFilePath</code> - The path to the PEM file generated by the Chef server.
-12.  <code>Chef.ValidationClientName</code> - The client name related to the key. It can be found in the Chef management under the Policy tab and Client sub-menu.
-13.  <code>Chef.ServerURL</code> - The URL of theChef server.
-14.  <code>Nessus.Protocol</code> - The protocol used to connect to the Nessus server. The default setting is https.
-15.  <code>Nessus.IPAddress</code> - The IP address of the Nessus server.
-16.  <code>Nessus.Port</code> - The port of the Nessus server. The default port id 8834.
-17.  <code>Nessus.Username</code> - Privileged user name in Nessus.
-18.  <code>Nessus.Pssword</code> - The passowrd of the user above.
-19.  <code>Nessus.ScanPolicyId</code> - The id of the scanning policy in Nessus.</p>
-
-<h4>
-<a id="management-hardcoded-configuration" class="anchor" href="#management-hardcoded-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Management Hardcoded Configuration</h4>
-
-<p>The file <code>manage.py</code> contains two hardcoded parameters used only by the configuration script:
-1. Look for the EC2 constructor and see the region name. It can be changed according to the relevant region name.
-2. The option to create a new instance contains hardcoded instance type, machine size and the instance name. </p>
-
-<h4>
-<a id="cloud-init-script" class="anchor" href="#cloud-init-script" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cloud-Init Script</h4>
-
-<p>The script in the file <code>AWS/CloudConfig.config</code> contains parameters set specifically for the environment, including S3 bucket to download files from and Chef's policy name.</p>
+<p>Please review Cloudefigo documentation on <a href="https://github.com/valtmanir/Cloudefigo/wiki">https://github.com/valtmanir/Cloudefigo/wiki</a></p>
       </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Cloudefigo maintained by <a href="https://github.com/valtmanir">valtmanir</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/valtmanir">valtmanir</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
     </div>
-
+    <script src="javascripts/scale.fix.js"></script>
               <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -245,7 +105,6 @@ wheel install PyChef-0.2.3-py27-none-any.whl
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
-
 
   </body>
 </html>
