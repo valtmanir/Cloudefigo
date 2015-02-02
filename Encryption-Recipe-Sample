@@ -1,0 +1,53 @@
+#
+# Cookbook Name:: encryption
+# Recipe:: default
+#
+# Copyright 2014, YOUR_COMPANY_NAME
+#
+# All rights reserved - Do Not Redistribute
+#
+
+apt_package "cryptsetup" do
+  action :install
+end
+
+apt_package "xfsprogs" do
+  action :install
+end
+
+execute "Mkdir" do
+ command "sudo mkdir /encrypted"
+  action :run
+ end
+
+
+execute "LuksFormat" do
+ command "sudo cryptsetup luksFormat /dev/xvdf  --key-file /Cloudefigo/key"
+  action :run
+ end
+ 
+execute "LuksOpen" do
+ command "sudo cryptsetup luksOpen /dev/xvdf crypt1 --key-file /Cloudefigo/key"
+  action :run
+end
+
+execute "mkfs" do
+ command "sudo mkfs -t xfs /dev/mapper/crypt1"
+  action :run
+end
+
+ 
+ execute "mount" do
+ command "sudo mount /dev/mapper/crypt1 /encrypted"
+  action :run
+ end
+ 
+ execute "touch1" do
+  command "sudo touch /encrypted/encrypted-db"
+  action :run
+ end
+ 
+execute "touch" do
+  command "sudo touch /tmp/done"
+  action :run
+ end
