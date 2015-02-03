@@ -42,8 +42,9 @@ def launch_instance(request):
 
 def get_unmanaged_servers(request):
     launcher = EC2InstanceAdmin(region = "us-east-1")
+    chef = ChefClient()
     iaas_instance_names = launcher.get_all_running_instance_names()
-    chef_nodes = ChefClient.get_all_nodes()
+    chef_nodes = chef.get_all_nodes()
     unmanaged_nodes = []
     for ec2_instance in iaas_instance_names:
        if ec2_instance not in chef_nodes:

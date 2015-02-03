@@ -7,4 +7,5 @@ urlpatterns = patterns('',
     url(r'^events/sync/reset$', views.reset_sync_events, name='sync'),
     url(r'^events/all/$', views.all_events, name='all'),
     url(r'^instances/launch$', views.launch_instance, name='all'),
+    url(r'^instances/unmanaged$', views.get_unmanaged_servers, name='all'),
 )
