@@ -36,3 +36,6 @@ $ cd Cloudefigo
 ```
 ### Documentation
 Please review Cloudefigo documentation on https://github.com/valtmanir/Cloudefigo/wiki
+
+### Credits
+Cloudefigo is based on the work from Rich Mogull ( Securosis) regarding  software defined security (https://github.com/rmogull). 
